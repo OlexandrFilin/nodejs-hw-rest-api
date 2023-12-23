@@ -21,8 +21,8 @@ app.use((req, res) => {
 })
 
 app.use((err, req, res, next) => {
-  const {status = 500,message = err.message} =err;
-  res.status(status).json({ message })
+  const {status = 500,message = "11111"} =err;
+  res.status(status).json({ message})
 })
 
 export default app
