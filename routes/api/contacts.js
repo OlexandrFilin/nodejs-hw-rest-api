@@ -1,21 +1,40 @@
-import { Router } from 'express'
-import {getAll, getById,add, update, remove,updateFavorite}  from "../../conrolers/contacts-controler.js"
+import { Router } from "express";
 
- import isEmptyBody from '../../middlewares/isEmptyBody.js';
-import isValidId from '../../middlewares/isValidID.js';
+import contactControler from "../../conrolers/contacts-controler.js";
 
+import isEmptyBody from "../../middlewares/isEmptyBody.js";
+import isValidId from "../../middlewares/isValidID.js";
+import { validateAccordingSchema } from "../../decorators/index.js";
+import {
+  addShemaContact,
+  updateShemaContact,
+  updateShemaContactFavorite,
+} from "../../models/Contacts.js";
+
+const { getAll, getById, add, update, remove, updateFavorite } =
+  contactControler;
 
 const router = Router();
 
-router.get('/', getAll);
+router.get("/", getAll);
 
- router.get('/:contactId', isValidId, getById);
+router.get("/:contactId", isValidId, getById);
 
- router.post('/',isEmptyBody,add);
- router.put('/:contactId', isValidId, isEmptyBody, update );
+router.post("/", isEmptyBody, validateAccordingSchema(addShemaContact), add);
+router.put(
+  "/:contactId",
+  isValidId,
+  isEmptyBody,
+  validateAccordingSchema(updateShemaContact),
+  update
+);
+router.patch(
+  "/:contactId/favorite",
+  isValidId,
+  validateAccordingSchema(updateShemaContactFavorite,"missing field favorite"),
+  updateFavorite
+);
 
- router.delete('/:contactId', isValidId, remove);
- router.patch('/:contactId/favorite', isValidId,  updateFavorite);
+router.delete("/:contactId", isValidId, remove);
 
-
-export default router
+export default router;

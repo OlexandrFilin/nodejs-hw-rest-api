@@ -1,111 +1,78 @@
-
- import { HttpError } from "../helpers/HttpError.js";
+import { isWrapperControler } from "../decorators/index.js";
+import { HttpError } from "../helpers/HttpError.js";
 // import { listContacts, getContactById,addContact,updateById, removeContact } from "../models/contacts/index.js";
 
 // import contactModel from "../models/Contacts.js";
-import contactModel,{ addShemaContact,updateShemaContact,updateShemaContactFavorite  } from "../models/Contacts.js";
+import contactModel from "../models/Contacts.js";
+//import contactModel,{ addShemaContact,updateShemaContact,updateShemaContactFavorite  } from "../models/Contacts.js";
 
+const getAll = async (req, res) => {
+  const list = await contactModel.find();
+  res.json(list);
+};
 
-
-
-export const getAll =async (req, res, next) => {
-  try {
-    const list = await contactModel.find();
-    res.json(list);
-  } catch (error) {
-    next(error);
-   
+const getById = async (req, res) => {
+  const { contactId } = req.params;
+  const contact = await contactModel.findById(contactId);
+  if (!contact) {
+    throw HttpError(404, ` Contact with id = ${contactId} not found`);
   }
-    
+  res.json(contact);
+};
+
+const update = async (req, res) => {
+  //  const {error} =updateShemaContact.validate(req.body);
+  // if (error) {
+  //   throw HttpError(400, error.message);
+  // }
+  const { contactId } = req.params;
+  // налаштування  {new:true,runValidators:true} вигесли в хук addAdjustmentsBeforeUpdate при створенні схеми mongoose
+  const contact = await contactModel.findByIdAndUpdate(contactId, req.body);
+  if (!contact) {
+    throw HttpError(404, ` Contact with id = ${contactId} not found`);
   }
-
-
-export const getById = async (req, res, next) => {
-  try {
-    const {contactId} =req.params;
-    const contact = await contactModel.findById(contactId);
-
-    if (!contact) {
-      throw  HttpError(404,` Contact with id = ${contactId} not found`);
-        }
-     res.json(contact );
-  } catch (error) {
-     next(error); 
-     }
-  
+  res.status(201).json(contact);
 };
 
-export const update= async (req, res, next) => {
-  try {
-     const {error} =updateShemaContact.validate(req.body);
-     const {contactId} =req.params
-    if (error) {
-      throw HttpError(400, error.message);
-    } 
-    // налаштування  {new:true,runValidators:true} вигесли в хук addAdjustmentsBeforeUpdate при створенні схеми mongoose
-    const contact = await contactModel.findByIdAndUpdate(contactId,req.body);
-    if (!contact) {
-      throw  HttpError(404,` Contact with id = ${contactId} not found`);
-        }
-     res.status(201).json(contact );
-
-
-  } catch (error) {
-     next(error); 
-     }
-  
+const updateFavorite = async (req, res) => {
+  //  const {error} =updateShemaContactFavorite.validate(req.body);
+  // if (error) {
+  //   throw HttpError(400, "missing field favorite");
+  // }
+  const { contactId } = req.params;
+  // налаштування  {new:true,runValidators:true} вигесли в хук addAdjustmentsBeforeUpdate при створенні схеми mongoose
+  const contact = await contactModel.findByIdAndUpdate(contactId, req.body);
+  if (!contact) {
+    throw HttpError(404, ` Contact with id = ${contactId} not found`);
+  }
+  res.status(201).json(contact);
 };
 
-export const updateFavorite= async (req, res, next) => {
-  try {
-     const {error} =updateShemaContactFavorite.validate(req.body);
-     const {contactId} =req.params
-    if (error) {
-      throw HttpError(400, "missing field favorite");
-    } 
-    // налаштування  {new:true,runValidators:true} вигесли в хук addAdjustmentsBeforeUpdate при створенні схеми mongoose
-    const contact = await contactModel.findByIdAndUpdate(contactId,req.body);
-    if (!contact) {
-      throw  HttpError(404,` Contact with id = ${contactId} not found`);
-        }
-     res.status(201).json(contact );
-
-
-  } catch (error) {
-     next(error); 
-     }
-  
+const add = async (req, res) => {
+  // const {error} =addShemaContact.validate(req.body);
+  // if (error) {
+  //   throw HttpError(400, error.message);
+  // }
+  const contact = await contactModel.create(req.body);
+  res.status(201).json(contact);
 };
 
-
-export const add = async (req, res, next) => {
-  try {
-    const {error} =addShemaContact.validate(req.body);
-    if (error) {
-      throw HttpError(400, error.message);
-    }
-      const contact = await contactModel.create(req.body);
-   
-     res.status(201).json(contact );
-  } catch (error) {
-     next(error); 
-     }
-  
+const remove = async (req, res) => {
+  const { contactId } = req.params;
+  const contact = await contactModel.findByIdAndDelete(contactId);
+  if (!contact) {
+    throw HttpError(404, ` Contact with id = ${contactId} not found`);
+  }
+  res.json({
+    message: "contact deleted",
+  });
 };
 
-export const remove = async (req, res, next) => {
-  try {
-    const {contactId} =req.params
-    const contact = await contactModel.findByIdAndDelete(contactId);
-    if (!contact) {
-      throw  HttpError(404,` Contact with id = ${contactId} not found`);
-        }
-    // res.json(contact );
-     res.json({
-      message:  "contact deleted"
-     } );
-  } catch (error) {
-     next(error); 
-     }
-  
+export default {
+  getAll: isWrapperControler(getAll),
+  getById: isWrapperControler(getById),
+  update: isWrapperControler(update),
+  updateFavorite: isWrapperControler(updateFavorite),
+  add: isWrapperControler(add),
+  remove: isWrapperControler(remove),
 };

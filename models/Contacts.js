@@ -3,22 +3,22 @@ import { handlerErrorSave, addAdjustmentsBeforeUpdate } from "./hooks.js";
 import Joi from "joi";
 
 // схеми JOI
-export const addShemaContact =Joi.object({
-    "name": Joi.string().required(),
-          "email": Joi.string().required(),
-          "phone": Joi.string().required(),
-          "favorite":Joi.boolean()
-  });
+export const addShemaContact = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
+  favorite: Joi.boolean(),
+});
 
-  export const updateShemaContact =Joi.object({
-         "name": Joi.string(),
-          "email": Joi.string(),
-          "phone": Joi.string(),
-          "favorite":Joi.boolean()
-  });
- export const updateShemaContactFavorite =Joi.object({
-          "favorite":Joi.boolean().required()
-  }); 
+export const updateShemaContact = Joi.object({
+  name: Joi.string(),
+  email: Joi.string(),
+  phone: Joi.string(),
+  favorite: Joi.boolean(),
+});
+export const updateShemaContactFavorite = Joi.object({
+  favorite: Joi.boolean().required(),
+});
 
 // схеми mogoose
 const { Schema, model } = mongoose;
@@ -26,18 +26,18 @@ const ContactSchema = new Schema(
   {
     name: {
       type: String,
-      require: true,
+      required: [true, "Set name for contact"],
     },
     email: {
       type: String,
       match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      require: true,
+      // required: true,
     },
     phone: {
       type: String,
-      require: true,
+      // required: true,
     },
-    favorite: {     
+    favorite: {
       type: Boolean,
       default: false,
     },
