@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { handlerErrorSave, addAdjustmentsBeforeUpdate } from "./hooks.js";
 import Joi from "joi";
-
+const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 // схеми JOI
 export const addShemaContact = Joi.object({
   name: Joi.string().required(),
@@ -30,7 +30,7 @@ const ContactSchema = new Schema(
     },
     email: {
       type: String,
-      match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      match: emailRegExp,
       // required: true,
     },
     phone: {
@@ -53,4 +53,4 @@ ContactSchema.post("findOneAndUpdate", handlerErrorSave);
 //
 const contactModel = model("contact", ContactSchema);
 
-export default contactModel;
+export default contactModel ;

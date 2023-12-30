@@ -1,11 +1,15 @@
-export const handlerErrorSave = (error,data,next)=>{
-error.status=400;
-next();
-}
+export const handlerErrorSave = (error, data, next) => {
+//   if (error.name === "MongoServerError" && error.code === 11000) {
+//     error.status = 409;
+//   } else {
+    error.status = 400;
+//  }
+  next();
+};
 
 // використовуємо функціональний вираз щоб не втратити this
-export  const addAdjustmentsBeforeUpdate = function(next){
-    this.options.new =true;
-    this.options.runValidators = true;
-    next();
-}
+export const addAdjustmentsBeforeUpdate = function (next) {
+  this.options.new = true;
+  this.options.runValidators = true;
+  next();
+};

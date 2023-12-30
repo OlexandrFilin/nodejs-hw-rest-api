@@ -3,8 +3,10 @@ import { Router } from "express";
 import contactControler from "../../conrolers/contacts-controler.js";
 
 import isEmptyBody from "../../middlewares/isEmptyBody.js";
-import isValidId from "../../middlewares/isValidID.js";
 import { validateAccordingSchema } from "../../decorators/index.js";
+
+import isValidId from "../../middlewares/isValidID.js";
+
 import {
   addShemaContact,
   updateShemaContact,
