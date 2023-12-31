@@ -6,10 +6,10 @@ const { Schema, model } = mongoose;
 const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
  const userSchema = new Schema({
-username: {
-    type: String,
-    required: true
-},
+// username: {
+//     type: String,
+//     required: true
+// },
 email: {
     type: String,
     required: [true, 'Email is required'],
@@ -26,6 +26,9 @@ email: {
     enum: ["starter", "pro", "business"],
     default: "starter"
   },
+  token: {
+    type: String,
+  }
 
 }, { versionKey: false, timestamps: true });
 
@@ -40,7 +43,7 @@ userSchema.post("findOneAndUpdate", handlerErrorSave);
 // схеми JOI
 //схема реєстрації
 export const userSignupSchema = Joi.object({
-    username : Joi.string().required(),
+   // username : Joi.string().required(),
     email: Joi.string().required().pattern(emailRegExp),
     password: Joi.string().min(6).required(),
 

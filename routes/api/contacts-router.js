@@ -2,10 +2,12 @@ import { Router } from "express";
 
 import contactControler from "../../conrolers/contacts-controler.js";
 
-import isEmptyBody from "../../middlewares/isEmptyBody.js";
+import {
+  isEmptyBody,
+  isValidId,
+  autentification,
+} from "../../middlewares/index.js";
 import { validateAccordingSchema } from "../../decorators/index.js";
-
-import isValidId from "../../middlewares/isValidID.js";
 
 import {
   addShemaContact,
@@ -17,7 +19,7 @@ const { getAll, getById, add, update, remove, updateFavorite } =
   contactControler;
 
 const router = Router();
-
+router.use(autentification);
 router.get("/", getAll);
 
 router.get("/:contactId", isValidId, getById);
@@ -33,7 +35,7 @@ router.put(
 router.patch(
   "/:contactId/favorite",
   isValidId,
-  validateAccordingSchema(updateShemaContactFavorite,"missing field favorite"),
+  validateAccordingSchema(updateShemaContactFavorite, "missing field favorite"),
   updateFavorite
 );
 
