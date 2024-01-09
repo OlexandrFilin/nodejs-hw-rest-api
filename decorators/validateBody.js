@@ -1,7 +1,6 @@
 import { HttpError } from "../helpers/HttpError.js";
 
 const validateAccordingSchema = (schemaMongoose, msg) => {
-//  console.log("schemaMongoose", msg);
   const fn = (req, res, next) => {
     const { error } = schemaMongoose.validate(req.body);
     if (error) {

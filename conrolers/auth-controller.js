@@ -7,7 +7,6 @@ import userModel from "../models/User.js";
 import dotenv from "dotenv/config";
 
 const { JWT_SECRET } = process.env;
-//console.log('process.env', process.env)
 const signUp = async (req, res) => {
   const { email, password } = req.body;
   const user = await userModel.findOne({ email });
@@ -18,7 +17,6 @@ const signUp = async (req, res) => {
   const newUser = await userModel.create({ ...req.body, password: hashPsw });
   res.status(201).json({
     user: {
-      //username: newUser.username,
       email: newUser.email,
       subscription: newUser.subscription,
     },
@@ -39,32 +37,40 @@ const signIn = async (req, res) => {
   const payload = { _id };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-  // console.log("_id", _id);
-  // console.log("token", token);
-  // console.log("username", username);
   const newUser = await userModel.findByIdAndUpdate(_id, { token });
+
   res.json({
     token,
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
-    }
+    },
   });
 };
+
 const getCurent = async (req, res) => {
   const { subscription, email } = req.user;
 
-  res.json({  email ,subscription});
+  res.json({ email, subscription });
 };
+
 const logout = async (req, res) => {
   const { _id } = req.user;
   await userModel.findByIdAndUpdate(_id, { token: "" });
- //res.json({ message: "Logout success" });
-res.status(204).json();
+  //res.json({ message: "Logout success" });
+  res.status(204).json();
+};
+
+const cahngeSubscriber = async (req, res) => {
+  const { _id, subscription } = req.user;
+  const { subscription:newSubscription } = req.body;
+  const user = await userModel.findByIdAndUpdate(_id, { subscription: newSubscription});
+  res.status(201).json(user);
 };
 export default {
   signUp: isWrapperControler(signUp),
   signIn: isWrapperControler(signIn),
   getCurent: isWrapperControler(getCurent),
   logout: isWrapperControler(logout),
+  cahngeSubscriber: isWrapperControler(cahngeSubscriber),
 };

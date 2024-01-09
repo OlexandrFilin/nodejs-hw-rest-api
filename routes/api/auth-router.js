@@ -5,13 +5,14 @@ import { userSignupSchema, userSigninSchema } from "../../models/User.js";
 import authController from "../../conrolers/auth-controller.js";
 import autentification from "../../middlewares/autentication.js";
 
-const {signUp,signIn,getCurent,logout} = authController;
+const {signUp,signIn,getCurent,logout,cahngeSubscriber} = authController;
 
 const authRouter = Router();
 
 authRouter.post('/register',isEmptyBody,validateAccordingSchema(userSignupSchema),signUp);
-// authRouter.get('/signin',isEmptyBody,validateAccordingSchema(userSigninSchema),signIn);
 authRouter.post('/login',isEmptyBody,validateAccordingSchema(userSigninSchema),signIn);
 authRouter.get('/curent',autentification,getCurent);
 authRouter.post('/logout',autentification,logout);
+authRouter.patch('',autentification,cahngeSubscriber);
+
 export default authRouter;

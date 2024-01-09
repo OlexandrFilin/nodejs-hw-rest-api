@@ -8,7 +8,7 @@ export const addShemaContact = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().pattern(emailRegExp).required(),
   phone: Joi.string().required(),
-  favorite: Joi.boolean(),
+  //favorite: Joi.boolean(),
   subscription:Joi.string().valid(...subscriptList),
 });
 
@@ -16,7 +16,7 @@ export const updateShemaContact = Joi.object({
   name: Joi.string(),
   email: Joi.string().pattern(emailRegExp),
   phone: Joi.string(),
-  favorite: Joi.boolean(),
+ // favorite: Joi.boolean(),
   subscription:Joi.string().valid(...subscriptList),
 });
 export const updateShemaContactFavorite = Joi.object({
