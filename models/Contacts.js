@@ -49,6 +49,9 @@ const ContactSchema = new Schema(
       enum: subscriptList,
       default: "starter"
     },
+    // avatarURL:{
+    //     type:String
+    //  },
     owner: {
       type: Schema.Types.ObjectId,
       ref: 'user',

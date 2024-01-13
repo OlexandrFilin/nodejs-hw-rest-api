@@ -1,6 +1,9 @@
+import path from "path";
 import { isWrapperControler } from "../decorators/index.js";
 import { HttpError } from "../helpers/HttpError.js";
 import contactModel from "../models/Contacts.js";
+// import fs from "fs/promises";
+
 
 const getAll = async (req, res) => {
   const { page = 1, limit = 5, favorite } = req.query;
@@ -35,10 +38,10 @@ const update = async (req, res) => {
   const { _id: owner } = req.user;
   // налаштування  {new:true,runValidators:true} винесли в хук addAdjustmentsBeforeUpdate при створенні схеми mongoose
 
-  const contact = await contactModel.findOneAndUpdate(
-    { _id: contactId, owner },
-    req.body
-  );
+  const contact = await contactModel.findOneAndUpdate({
+    _id: contactId,
+    owner,
+  });
   if (!contact) {
     throw HttpError(404, ` Contact with id = ${contactId} not found`);
   }
@@ -60,11 +63,22 @@ const updateFavorite = async (req, res) => {
 };
 
 const add = async (req, res) => {
+//   //переміщуємо файл з папку tmp в папку  public/avatar
+//   //path - це  повний шлях до файлу, включаючі його назву в папці tmp
+//   //filename - імя файлу (звертати увагу на регістр не кемелкейс)
+//  const { path: pathFileTemp, filename } = req.file;
+//   //створюємо абсолютний шлях до нового розташування файлу для його перенесення з папки tmp
+//   const newPathAbsolute = path.resolve("public","avatars",filename);
+//  //const newPathAbsolute = path.join(pathNew, filename);
+//  //console.log("newPathAbsolute", newPathAbsolute);
+//   await fs.rename(pathFileTemp, newPathAbsolute);
+//    const newPathRelative = path.join("avatars", filename);
   const contact = await contactModel.create({
     ...req.body,
+    //avatarURL: newPathRelative,
     owner: req.user._id,
   });
-  res.status(201).json(contact);
+ res.status(201).json(contact);
 };
 
 const remove = async (req, res) => {

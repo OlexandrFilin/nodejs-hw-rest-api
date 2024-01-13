@@ -6,6 +6,7 @@ import {
   isEmptyBody,
   isValidId,
   autentification,
+ // upload,
 } from "../../middlewares/index.js";
 import { validateAccordingSchema } from "../../decorators/index.js";
 
@@ -20,11 +21,14 @@ const { getAll, getById, add, update, remove, updateFavorite } =
 
 const router = Router();
 router.use(autentification);
+
 router.get("/", getAll);
 
 router.get("/:contactId", isValidId, getById);
 
+//router.post("/",upload.single("avatarURL"), isEmptyBody, validateAccordingSchema(addShemaContact), add);
 router.post("/", isEmptyBody, validateAccordingSchema(addShemaContact), add);
+
 router.put(
   "/:contactId",
   isValidId,

@@ -4,21 +4,59 @@ import bcrypt from "bcrypt";
 import { isWrapperControler } from "../decorators/index.js";
 import { HttpError } from "../helpers/HttpError.js";
 import userModel from "../models/User.js";
+import path from "path";
+import fs from "fs/promises";
+import gravatar from "gravatar";
+import Jimp from "jimp";
 import dotenv from "dotenv/config";
 
 const { JWT_SECRET } = process.env;
+
 const signUp = async (req, res) => {
   const { email, password } = req.body;
+  const newPathRelative = gravatar.url(email);
   const user = await userModel.findOne({ email });
   if (user) {
     throw HttpError(409, "User with email is already registered");
   }
   const hashPsw = await bcrypt.hash(password, 10);
-  const newUser = await userModel.create({ ...req.body, password: hashPsw });
+  const newUser = await userModel.create({
+    ...req.body,
+    avatarURL: newPathRelative,
+    password: hashPsw,
+  });
   res.status(201).json({
     user: {
       email: newUser.email,
+      avatarURL: newUser.avatarURL,
       subscription: newUser.subscription,
+    },
+  });
+};
+
+const updateAvatars = async (req, res) => {
+  //переміщуємо отриманий з запиту файл з папки tmp в папку  public/avatar
+  //path - це  повний шлях до файлу, включаючі його назву в папці tmp
+  //filename - імя файлу (звертати увагу на регістр не кемелкейс)
+  const { path: pathFileTemp, filename } = req.file;
+  const {_id} = req.user;
+  //створюємо абсолютний шлях до нового розташування файлу для його перенесення з папки tmp
+  const result = await Jimp.read(pathFileTemp);
+  result.resize(250, 250)
+  .write(pathFileTemp);
+  const extentFile = filename.split(".").pop();
+  const newFileName = req.user.userName + "." + extentFile;
+  const newPathAbsolute = path.resolve(
+    "public",
+    "avatars",
+    newFileName
+  );
+   await fs.rename(pathFileTemp, newPathAbsolute);
+ const newPathRelative = path.join("avatars", newFileName );
+ await userModel.findByIdAndUpdate(_id, {avatarURL: newPathRelative });
+  res.json({
+    user: {
+      avatarURL: newPathRelative,
     },
   });
 };
@@ -33,7 +71,7 @@ const signIn = async (req, res) => {
   if (!hashPsw) {
     throw HttpError(401, "Email or password is wrong");
   }
-  const { _id, username } = user;
+  const { _id, } = user;
   const payload = { _id };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
@@ -61,10 +99,12 @@ const logout = async (req, res) => {
   res.status(204).json();
 };
 
-const cahngeSubscriber = async (req, res) => {
-  const { _id, subscription } = req.user;
-  const { subscription:newSubscription } = req.body;
-  const user = await userModel.findByIdAndUpdate(_id, { subscription: newSubscription});
+const cahngeSubscribtion = async (req, res) => {
+  const { _id } = req.user;
+  const { subscription: newSubscription } = req.body;
+  const user = await userModel.findByIdAndUpdate(_id, {
+    subscription: newSubscription,
+  });
   res.status(201).json(user);
 };
 export default {
@@ -72,5 +112,6 @@ export default {
   signIn: isWrapperControler(signIn),
   getCurent: isWrapperControler(getCurent),
   logout: isWrapperControler(logout),
-  cahngeSubscriber: isWrapperControler(cahngeSubscriber),
+  cahngeSubscribtion: isWrapperControler(cahngeSubscribtion),
+  updateAvatars: isWrapperControler(updateAvatars),
 };
