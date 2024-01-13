@@ -4,14 +4,14 @@ import { validateAccordingSchema } from "../../decorators/index.js";
 import { userSignupSchema, userSigninSchema } from "../../models/User.js";
 import authController from "../../conrolers/auth-controller.js";
 //import autentification from "../../middlewares/autentication.js";
-
+import  updateAvatar  from "../../conrolers/avatarUpdate.js"
 import {
     isEmptyBody,
      autentification,
-   upload,
-  } from "../../middlewares/index.js";
+     upload 
+     } from "../../middlewares/index.js";
 
-const {signUp,signIn,getCurent,logout,cahngeSubscribtion,updateAvatars} = authController;
+const {signUp,signIn,getCurent,logout,cahngeSubscribtion} = authController;
 const authRouter = Router();
 
 authRouter.post('/register',upload.single("avatarURL"),isEmptyBody,validateAccordingSchema(userSignupSchema),signUp);
@@ -19,5 +19,5 @@ authRouter.post('/login',isEmptyBody,validateAccordingSchema(userSigninSchema),s
 authRouter.get('/curent',autentification,getCurent);
 authRouter.post('/logout',autentification,logout);
 authRouter.patch('/',autentification,cahngeSubscribtion);
-authRouter.patch('/avatars',autentification,upload.single("avatarURL"), updateAvatars);
+authRouter.patch('/avatars',autentification,upload.single("avatarURL"), updateAvatar);
 export default authRouter;
