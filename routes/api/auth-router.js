@@ -11,7 +11,7 @@ import {
      upload 
      } from "../../middlewares/index.js";
 
-const {signUp,signIn,getCurent,logout,cahngeSubscribtion} = authController;
+const {signUp,signIn,getCurent,logout,cahngeSubscribtion,verifyToken} = authController;
 const authRouter = Router();
 
 authRouter.post('/register',upload.single("avatarURL"),isEmptyBody,validateAccordingSchema(userSignupSchema),signUp);
@@ -20,4 +20,7 @@ authRouter.get('/curent',autentification,getCurent);
 authRouter.post('/logout',autentification,logout);
 authRouter.patch('/',autentification,cahngeSubscribtion);
 authRouter.patch('/avatars',autentification,upload.single("avatarURL"), updateAvatar);
+authRouter.get('/verify/:verificationToken',autentification,verifyToken);
+
+
 export default authRouter;

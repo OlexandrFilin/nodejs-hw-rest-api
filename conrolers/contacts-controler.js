@@ -61,16 +61,6 @@ const updateFavorite = async (req, res) => {
 };
 
 const add = async (req, res) => {
-//   //переміщуємо файл з папку tmp в папку  public/avatar
-//   //path - це  повний шлях до файлу, включаючі його назву в папці tmp
-//   //filename - імя файлу (звертати увагу на регістр не кемелкейс)
-//  const { path: pathFileTemp, filename } = req.file;
-//   //створюємо абсолютний шлях до нового розташування файлу для його перенесення з папки tmp
-//   const newPathAbsolute = path.resolve("public","avatars",filename);
-//  //const newPathAbsolute = path.join(pathNew, filename);
-//  //console.log("newPathAbsolute", newPathAbsolute);
-//   await fs.rename(pathFileTemp, newPathAbsolute);
-//    const newPathRelative = path.join("avatars", filename);
   const contact = await contactModel.create({
     ...req.body,
     //avatarURL: newPathRelative,
