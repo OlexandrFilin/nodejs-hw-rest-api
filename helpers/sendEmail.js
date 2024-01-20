@@ -21,7 +21,6 @@ const sendEmail = async (dataEmail) => {
   };
   try {
     await transport.sendMail(email);
-    console.log("Email send success");
   } catch (error) {
     throw HttpError(400, error.message);
   }

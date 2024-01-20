@@ -39,7 +39,7 @@ const userSchema = new Schema(
     },
     verificationToken: {
       type: String,
-      required: [true, "Verify token is required"],
+      //required: [true, "Verify token is required"],
     },
 
     token: {
@@ -68,6 +68,10 @@ export const userSigninSchema = Joi.object({
   email: Joi.string().required().pattern(emailRegExp),
   password: Joi.string().min(6).required(),
 });
+//схема повторного відправлення листа
+export const resendEmailSchema = Joi.object({
+  email: Joi.string().required().pattern(emailRegExp),
 
+});
 const userModel = model("user", userSchema);
 export default userModel;
