@@ -67,9 +67,7 @@ const getCurent = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  console.log("111")
   const { _id } = req.user;
-  console.log('req.user', req.user)
   await userModel.findByIdAndUpdate(_id, { token: "" });
   //res.json({ message: "Logout success" });
   res.status(204).json();

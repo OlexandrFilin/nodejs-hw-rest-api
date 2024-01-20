@@ -8,7 +8,6 @@ import contactModel from "../models/Contacts.js";
 const getAll = async (req, res) => {
   const { page = 1, limit = 5, favorite } = req.query;
   const skip = (page - 1) * limit;
-
   const query = { owner: req.user._id };
   if (favorite) {
     query.favorite = favorite;
@@ -22,7 +21,6 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   const { contactId } = req.params;
-  //const contact = await contactModel.findById(contactId);
   const contact = await contactModel.findOne({
     _id: contactId,
     owner: req.user._id,

@@ -14,7 +14,13 @@ const updateAvatars = async (req, res) => {
     //створюємо абсолютний шлях до нового розташування файлу для його перенесення з папки tmp
     try {
       const result = await Jimp.read(pathFileTemp);
-      result.resize(250, 250).write(pathFileTemp);
+      await result.resize(250, 250).Asincwrite(pathFileTemp,cb);
+      const cb = (err,image) =>{
+        if (err){
+          throw HttpError(500, "Error resize image ");
+        }
+        
+      }
       const extentFile = filename.split(".").pop();
       const newFileName = req.user.userName + "." + extentFile;
       const newPathAbsolute = path.resolve("public", "avatars", newFileName);

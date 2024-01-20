@@ -4,8 +4,7 @@ import userModel from "../models/User.js";
 import dotenv from "dotenv/config";
 const {JWT_SECRET} = process.env;
 const autentification = async (req,res,next)=>{
-    
- const {authorization} = req.headers;
+const {authorization} = req.headers;
 
 if (!authorization){
     return next(HttpError(401,"Not authorizet "));
